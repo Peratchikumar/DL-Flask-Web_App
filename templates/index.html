@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="description"
+        content="DriveInspect - AI powered vehicle damage detection using YOLO26."
+    >
+
+    <meta name="theme-color" content="#07090d">
+
+    <title>DriveInspect | AI Vehicle Damage Detection</title>
+
+
+    <!-- =====================================================
+         GOOGLE FONTS
+    ====================================================== -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+
+    <!-- =====================================================
+         FLASK STATIC CSS
+         IMPORTANT:
+         style.css must be inside /static/
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+
+</head>
+
+
+<body>
+
+    <!-- =====================================================
+         BACKGROUND
+    ====================================================== -->
+
+    <div class="ambient-background">
+
+        <div class="ambient-light light-one"></div>
+
+        <div class="ambient-light light-two"></div>
+
+        <div class="background-grid"></div>
+
+    </div>
+
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <header class="topbar">
+
+        <div class="topbar-inner">
+
+            <!-- BRAND -->
+
+            <a
+                href="/"
+                class="brand"
+                aria-label="DriveInspect Home"
+            >
+
+                <div class="brand-mark">
+
+                    <svg
+                        viewBox="0 0 48 48"
+                        fill="none"
+                    >
+
+                        <path
+                            d="M10 29.5L13.8 18.8C14.3 17.4 15.6 16.5 17.1 16.5H30.9C32.4 16.5 33.7 17.4 34.2 18.8L38 29.5"
+                            stroke="currentColor"
+                            stroke-width="2.4"
+                            stroke-linecap="round"
+                        />
+
+                        <path
+                            d="M8.5 29.5H39.5V35.5C39.5 36.6 38.6 37.5 37.5 37.5H10.5C9.4 37.5 8.5 36.6 8.5 35.5V29.5Z"
+                            stroke="currentColor"
+                            stroke-width="2.4"
+                        />
+
+                        <circle
+                            cx="15"
+                            cy="31.5"
+                            r="2.2"
+                            fill="currentColor"
+                        />
+
+                        <circle
+                            cx="33"
+                            cy="31.5"
+                            r="2.2"
+                            fill="currentColor"
+                        />
+
+                        <path
+                            d="M19 22H29"
+                            stroke="currentColor"
+                            stroke-width="2.4"
+                            stroke-linecap="round"
+                        />
+
+                    </svg>
+
+                </div>
+
+
+                <div class="brand-copy">
+
+                    <span class="brand-name">
+                        DriveInspect
+                    </span>
+
+                    <span class="brand-caption">
+                        AI VEHICLE ANALYSIS
+                    </span>
+
+                </div>
+
+            </a>
+
+
+            <!-- MODEL STATUS -->
+
+            <div class="model-chip">
+
+                <span class="live-dot"></span>
+
+                <span>YOLO26</span>
+
+                <span class="chip-divider"></span>
+
+                <span>OBJECT DETECTION</span>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         MAIN
+    ====================================================== -->
+
+    <main>
+
+
+        <!-- =================================================
+             HERO
+        ================================================== -->
+
+        <section class="hero">
+
+
+            <!-- LEFT SIDE -->
+
+            <div class="hero-copy">
+
+
+                <div class="hero-eyebrow">
+
+                    <span class="eyebrow-line"></span>
+
+                    INTELLIGENT VEHICLE INSPECTION
+
+                </div>
+
+
+                <h1>
+
+                    Turn a vehicle
+                    <span>
+                        photo into insight.
+                    </span>
+
+                </h1>
+
+
+                <p class="hero-description">
+
+                    Upload a clear vehicle image and let
+                    our AI-powered computer vision system
+                    identify visible vehicle damage
+                    automatically.
+
+                </p>
+
+
+                <!-- FEATURE POINTS -->
+
+                <div class="hero-points">
+
+
+                    <div class="hero-point">
+
+                        <span class="point-icon">
+
+                            <svg
+                                viewBox="0 0 24 24"
+                                fill="none"
+                            >
+
+                                <path
+                                    d="M20 6L9 17L4 12"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                />
+
+                            </svg>
+
+                        </span>
+
+                        AI-powered detection
+
+                    </div>
+
+
+                    <div class="hero-point">
+
+                        <span class="point-icon">
+
+                            <svg
+                                viewBox="0 0 24 24"
+                                fill="none"
+                            >
+
+                                <path
+                                    d="M12 3V21"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                />
+
+                                <path
+                                    d="M3 12H21"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                />
+
+                            </svg>
+
+                        </span>
+
+                        Multiple damage classes
+
+                    </div>
+
+
+                    <div class="hero-point">
+
+                        <span class="point-icon">
+
+                            <svg
+                                viewBox="0 0 24 24"
+                                fill="none"
+                            >
+
+                                <path
+                                    d="M12 3L19 6V11C19 15.5 16.2 19.3 12 21C7.8 19.3 5 15.5 5 11V6L12 3Z"
+                                    stroke="currentColor"
+                                    stroke-width="1.8"
+                                />
+
+                                <path
+                                    d="M9 12L11 14L15 10"
+                                    stroke="currentColor"
+                                    stroke-width="1.8"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                />
+
+                            </svg>
+
+                        </span>
+
+                        Local image processing
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 UPLOAD CARD
+            ================================================== -->
+
+            <div class="inspection-panel">
+
+
+                <!-- CARD HEADER -->
+
+                <div class="panel-top">
+
+                    <div>
+
+                        <span class="panel-label">
+                            VEHICLE INSPECTION
+                        </span>
+
+                        <h2>
+                            Upload an image
+                        </h2>
+
+                    </div>
+
+
+                    <div class="image-only-badge">
+
+                        <span></span>
+
+                        IMAGE ONLY
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     UPLOAD ZONE
+                ================================================== -->
+
+                <div
+                    class="upload-area"
+                    id="uploadZone"
+                    tabindex="0"
+                    role="button"
+                    aria-label="Upload vehicle image"
+                >
+
+
+                    <!-- Decorative corners -->
+
+                    <div
+                        class="upload-corner corner-tl"
+                    ></div>
+
+                    <div
+                        class="upload-corner corner-tr"
+                    ></div>
+
+                    <div
+                        class="upload-corner corner-bl"
+                    ></div>
+
+                    <div
+                        class="upload-corner corner-br"
+                    ></div>
+
+
+                    <div class="upload-inner">
+
+
+                        <!-- UPLOAD ICON -->
+
+                        <div class="upload-symbol">
+
+                            <svg
+                                viewBox="0 0 64 64"
+                                fill="none"
+                            >
+
+                                <rect
+                                    x="10"
+                                    y="10"
+                                    width="44"
+                                    height="44"
+                                    rx="10"
+                                    stroke="currentColor"
+                                    stroke-width="1.7"
+                                />
+
+                                <path
+                                    d="M20 43L30 32L37 39L42 34L51 43"
+                                    stroke="currentColor"
+                                    stroke-width="1.8"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                />
+
+                                <circle
+                                    cx="25"
+                                    cy="24"
+                                    r="3.5"
+                                    stroke="currentColor"
+                                    stroke-width="1.7"
+                                />
+
+                            </svg>
+
+                        </div>
+
+
+                        <h3>
+                            Drop your vehicle image here
+                        </h3>
+
+
+                        <p>
+
+                            or
+
+                            <button
+                                type="button"
+                                class="browse-link"
+                                id="browseButton"
+                            >
+                                choose from your device
+                            </button>
+
+                        </p>
+
+
+                        <!-- SUPPORTED FORMATS -->
+
+                        <div class="format-row">
+
+                            <span>JPG</span>
+
+                            <span>JPEG</span>
+
+                            <span>PNG</span>
+
+                            <span>WEBP</span>
+
+                            <span>BMP</span>
+
+                            <span class="format-limit">
+                                UP TO 100 MB
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- FILE INPUT -->
+
+                    <input
+                        type="file"
+                        id="fileInput"
+                        name="file"
+                        accept=".jpg,.jpeg,.png,.webp,.bmp,image/jpeg,image/png,image/webp,image/bmp"
+                        hidden
+                    >
+
+                </div>
+
+
+                <!-- =================================================
+                     SELECTED IMAGE
+                ================================================== -->
+
+                <div
+                    class="selected-image-card"
+                    id="selectedFile"
+                    hidden
+                >
+
+                    <div class="selected-thumbnail">
+
+                        <img
+                            id="selectedImage"
+                            src=""
+                            alt="Selected vehicle image"
+                        >
+
+                    </div>
+
+
+                    <div class="selected-copy">
+
+                        <span class="selected-label">
+                            SELECTED IMAGE
+                        </span>
+
+                        <strong id="fileName">
+                            vehicle.jpg
+                        </strong>
+
+                        <span id="fileSize">
+                            0 MB
+                        </span>
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        class="clear-image"
+                        id="removeFile"
+                        aria-label="Remove image"
+                    >
+
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                        >
+
+                            <path
+                                d="M6 6L18 18M18 6L6 18"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                            />
+
+                        </svg>
+
+                    </button>
+
+                </div>
+
+
+                <!-- =================================================
+                     ANALYZE BUTTON
+                ================================================== -->
+
+                <button
+                    type="button"
+                    class="analyze-button"
+                    id="detectButton"
+                    disabled
+                >
+
+                    <span class="analyze-content">
+
+                        <span class="analyze-icon">
+
+                            <svg
+                                viewBox="0 0 24 24"
+                                fill="none"
+                            >
+
+                                <path
+                                    d="M12 3V7"
+                                    stroke="currentColor"
+                                    stroke-width="1.8"
+                                    stroke-linecap="round"
+                                />
+
+                                <path
+                                    d="M12 17V21"
+                                    stroke="currentColor"
+                                    stroke-width="1.8"
+                                    stroke-linecap="round"
+                                />
+
+                                <path
+                                    d="M3 12H7"
+                                    stroke="currentColor"
+                                    stroke-width="1.8"
+                                    stroke-linecap="round"
+                                />
+
+                                <path
+                                    d="M17 12H21"
+                                    stroke="currentColor"
+                                    stroke-width="1.8"
+                                    stroke-linecap="round"
+                                />
+
+                                <circle
+                                    cx="12"
+                                    cy="12"
+                                    r="4"
+                                    stroke="currentColor"
+                                    stroke-width="1.8"
+                                />
+
+                            </svg>
+
+                        </span>
+
+
+                        <span id="detectButtonText">
+                            Analyze Vehicle
+                        </span>
+
+                    </span>
+
+
+                    <span
+                        class="button-loader"
+                        id="buttonLoader"
+                        hidden
+                    ></span>
+
+                </button>
+
+
+                <!-- LOCAL PROCESSING -->
+
+                <div class="privacy-note">
+
+                    <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                    >
+
+                        <path
+                            d="M12 3L19 6V11C19 15.5 16.2 19.3 12 21C7.8 19.3 5 15.5 5 11V6L12 3Z"
+                            stroke="currentColor"
+                            stroke-width="1.6"
+                        />
+
+                    </svg>
+
+                    Processed through your local Flask application
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             PROCESSING
+        ====================================================== -->
+
+        <section
+            class="processing-section"
+            id="progressSection"
+            hidden
+        >
+
+            <div class="processing-card">
+
+                <div class="processing-top">
+
+
+                    <div class="processing-left">
+
+                        <div class="scan-icon">
+
+                            <span></span>
+
+                        </div>
+
+
+                        <div>
+
+                            <span class="processing-label">
+                                ANALYSIS IN PROGRESS
+                            </span>
+
+                            <h3 id="progressText">
+                                Preparing vehicle image...
+                            </h3>
+
+                        </div>
+
+                    </div>
+
+
+                    <strong id="progressPercent">
+                        0%
+                    </strong>
+
+                </div>
+
+
+                <div class="scan-progress">
+
+                    <div
+                        class="scan-progress-bar"
+                        id="progressBar"
+                    ></div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             ERROR
+        ====================================================== -->
+
+        <section
+            class="error-section"
+            id="errorMessage"
+            hidden
+        >
+
+            <div class="error-card">
+
+                <div class="error-symbol">
+                    !
+                </div>
+
+
+                <div class="error-copy">
+
+                    <strong>
+                        Detection failed
+                    </strong>
+
+                    <span id="errorText">
+                        Something went wrong.
+                    </span>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    id="closeError"
+                    class="close-error"
+                    aria-label="Close error"
+                >
+                    ×
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             RESULTS
+        ====================================================== -->
+
+        <section
+            class="results-section"
+            id="resultsSection"
+            hidden
+        >
+
+
+            <!-- RESULTS HEADER -->
+
+            <div class="results-heading">
+
+                <div>
+
+                    <span class="result-label">
+                        INSPECTION REPORT
+                    </span>
+
+                    <h2>
+                        Detection results
+                    </h2>
+
+                    <p id="resultMessage">
+                        AI analysis completed successfully.
+                    </p>
+
+                </div>
+
+
+                <div class="result-status">
+
+                    <span></span>
+
+                    ANALYSIS COMPLETE
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 RESULT IMAGE
+            ================================================== -->
+
+            <div class="result-frame">
+
+
+                <div class="result-frame-top">
+
+                    <div class="result-engine">
+
+                        <span class="engine-dot"></span>
+
+                        YOLO26 DETECTION OUTPUT
+
+                    </div>
+
+
+                    <span>
+                        BOUNDING BOXES
+                    </span>
+
+                </div>
+
+
+                <div class="result-image-container">
+
+                    <img
+                        id="resultImage"
+                        src=""
+                        alt="Vehicle damage detection result"
+                    >
+
+
+                    <div
+                        class="result-placeholder"
+                        id="mediaPlaceholder"
+                        hidden
+                    >
+                        No result image available.
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 METRICS
+            ================================================== -->
+
+            <div class="metrics-grid">
+
+
+                <!-- TOTAL -->
+
+                <div class="metric-card">
+
+                    <div class="metric-icon">
+
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                        >
+
+                            <rect
+                                x="4"
+                                y="4"
+                                width="16"
+                                height="16"
+                                rx="3"
+                                stroke="currentColor"
+                                stroke-width="1.7"
+                            />
+
+                            <path
+                                d="M8 12H16M12 8V16"
+                                stroke="currentColor"
+                                stroke-width="1.7"
+                                stroke-linecap="round"
+                            />
+
+                        </svg>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            Total detections
+                        </span>
+
+                        <strong id="totalDetections">
+                            0
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <!-- CONFIDENCE -->
+
+                <div class="metric-card">
+
+                    <div class="metric-icon">
+
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                        >
+
+                            <path
+                                d="M12 3L19 6V11C19 15.5 16.2 19.3 12 21C7.8 19.3 5 15.5 5 11V6L12 3Z"
+                                stroke="currentColor"
+                                stroke-width="1.7"
+                            />
+
+                            <path
+                                d="M9 12L11 14L15 10"
+                                stroke="currentColor"
+                                stroke-width="1.7"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            />
+
+                        </svg>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            Average confidence
+                        </span>
+
+                        <strong id="averageConfidence">
+                            0%
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <!-- DAMAGE TYPES -->
+
+                <div class="metric-card">
+
+                    <div class="metric-icon">
+
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                        >
+
+                            <path
+                                d="M5 19V10"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                            />
+
+                            <path
+                                d="M12 19V5"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                            />
+
+                            <path
+                                d="M19 19V8"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                            />
+
+                        </svg>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            Damage types
+                        </span>
+
+                        <strong id="damageTypeCount">
+                            0
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 DAMAGE SUMMARY
+            ================================================== -->
+
+            <div class="analysis-block">
+
+                <div class="analysis-header">
+
+                    <div>
+
+                        <span class="result-label">
+                            CLASS DISTRIBUTION
+                        </span>
+
+                        <h3>
+                            Detected damage
+                        </h3>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="damage-grid"
+                    id="damageList"
+                ></div>
+
+            </div>
+
+
+            <!-- =================================================
+                 DETECTION DETAILS
+            ================================================== -->
+
+            <div class="analysis-block">
+
+                <div class="analysis-header">
+
+                    <div>
+
+                        <span class="result-label">
+                            DETECTION DETAILS
+                        </span>
+
+                        <h3>
+                            Confidence breakdown
+                        </h3>
+
+                    </div>
+
+
+                    <span
+                        class="class-count"
+                        id="detectionCountLabel"
+                    >
+                        0 detections
+                    </span>
+
+                </div>
+
+
+                <div
+                    class="detection-list"
+                    id="detectionList"
+                ></div>
+
+            </div>
+
+
+            <!-- =================================================
+                 ACTION BUTTONS
+            ================================================== -->
+
+            <div class="result-actions">
+
+
+                <button
+                    type="button"
+                    class="outline-button"
+                    id="openResultButton"
+                >
+
+                    <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                    >
+
+                        <path
+                            d="M14 5H19V10"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        />
+
+                        <path
+                            d="M10 14L19 5"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                            stroke-linecap="round"
+                        />
+
+                        <path
+                            d="M19 14V18C19 19.1 18.1 20 17 20H6C4.9 20 4 19.1 4 18V7C4 5.9 4.9 5 6 5H10"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                            stroke-linecap="round"
+                        />
+
+                    </svg>
+
+                    Open Result
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="solid-button"
+                    id="newDetectionButton"
+                >
+
+                    <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                    >
+
+                        <path
+                            d="M20 11A8.1 8.1 0 0 0 5.3 7.3L4 9"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        />
+
+                        <path
+                            d="M4 5V9H8"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        />
+
+                        <path
+                            d="M4 13A8.1 8.1 0 0 0 18.7 16.7L20 15"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        />
+
+                        <path
+                            d="M20 19V15H16"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        />
+
+                    </svg>
+
+                    New Inspection
+
+                </button>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer class="footer">
+
+        <div class="footer-inner">
+
+            <span>
+                DRIVEINSPECT
+            </span>
+
+            <span>
+                AI VEHICLE DAMAGE DETECTION
+            </span>
+
+            <span>
+                POWERED BY YOLO26
+            </span>
+
+        </div>
+
+    </footer>
+
+
+    <!-- =====================================================
+         FLASK STATIC JAVASCRIPT
+         IMPORTANT:
+         script.js must be inside /static/
+    ====================================================== -->
+
+    <script
+        src="{{ url_for('static', filename='script.js') }}"
+    ></script>
+
+
+</body>
+
+</html>
