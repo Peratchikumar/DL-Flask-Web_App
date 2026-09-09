@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vehicle damage scan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+  <main class="wrap">
+    <header class="page-head">
+      <h1>Vehicle damage scan</h1>
+      <p class="lede">Upload a photo of a vehicle and the model will mark the damage it finds, panel by panel.</p>
+    </header>
+
+    <form class="scan-form" action="/predict" method="post" enctype="multipart/form-data" id="scan-form">
+      <label class="dropzone" id="dropzone" for="image-input">
+        <input type="file" name="image" id="image-input" accept="image/*" hidden />
+        <div class="dropzone-inner" id="dropzone-inner">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 16V4M12 4L7 9M12 4L17 9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M4 16V18C4 19.1046 4.89543 20 6 20H18C19.1046 20 20 19.1046 20 18V16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span class="dropzone-label">Drop a photo here, or click to browse</span>
+          <span class="dropzone-file" id="dropzone-file"></span>
+        </div>
+      </label>
+
+      {% if error %}
+        <p class="form-error">{{ error }}</p>
+      {% endif %}
+
+      <button type="submit" class="run-btn" id="run-btn">Run scan</button>
+    </form>
+
+    {% if result_image %}
+    <section class="results">
+      <div class="results-grid">
+        <div class="result-image-panel">
+          <img src="data:image/jpeg;base64,{{ result_image }}" alt="Annotated scan result" />
+        </div>
+
+        <div class="report-panel">
+          <div class="report-head">
+            <h2>Damage report</h2>
+            <span class="scan-time">scanned in {{ infer_ms }}ms</span>
+          </div>
+
+          {% if detections %}
+          <ul class="report-list">
+            {% for d in detections %}
+            <li class="report-row">
+              <span class="swatch" style="background:{{ d.color_hex }}"></span>
+              <span class="report-name">{{ d.class_name }}</span>
+              <span class="confidence-bar"><span class="confidence-fill" style="width:{{ (d.confidence * 100) | round(0) }}%;background:{{ d.color_hex }}"></span></span>
+              <span class="report-conf">{{ (d.confidence * 100) | round(1) }}%</span>
+            </li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <p class="no-damage">No damage detected above the confidence threshold.</p>
+          {% endif %}
+        </div>
+      </div>
+    </section>
+    {% endif %}
+
+    <footer class="page-foot">
+      <span>YOLO26n · trained on 14 damage classes</span>
+    </footer>
+  </main>
+
+  <script>
+    const input = document.getElementById('image-input');
+    const dropzone = document.getElementById('dropzone');
+    const fileLabel = document.getElementById('dropzone-file');
+    const runBtn = document.getElementById('run-btn');
+    const form = document.getElementById('scan-form');
+
+    function showFileName(file) {
+      fileLabel.textContent = file ? file.name : '';
+    }
+
+    input.addEventListener('change', () => showFileName(input.files[0]));
+
+    ['dragenter', 'dragover'].forEach(evt =>
+      dropzone.addEventListener(evt, e => {
+        e.preventDefault();
+        dropzone.classList.add('is-dragover');
+      })
+    );
+    ['dragleave', 'drop'].forEach(evt =>
+      dropzone.addEventListener(evt, e => {
+        e.preventDefault();
+        dropzone.classList.remove('is-dragover');
+      })
+    );
+    dropzone.addEventListener('drop', e => {
+      const file = e.dataTransfer.files[0];
+      if (file) {
+        input.files = e.dataTransfer.files;
+        showFileName(file);
+      }
+    });
+
+    form.addEventListener('submit', () => {
+      if (input.files.length) {
+        runBtn.textContent = 'Scanning…';
+        runBtn.disabled = true;
+      }
+    });
+  </script>
+</body>
+</html>
