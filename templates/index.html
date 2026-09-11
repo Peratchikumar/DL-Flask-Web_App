@@ -1,0 +1,1272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Vehicle Damage AI</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<!-- =====================================================
+     TOP NAVIGATION
+===================================================== -->
+
+<nav class="navbar">
+
+    <div class="nav-container">
+
+        <div class="logo">
+
+            <div class="logo-icon">
+                VD
+            </div>
+
+            <div class="logo-text">
+                <strong>VehicleDamage</strong>
+                <span>AI Inspection</span>
+            </div>
+
+        </div>
+
+
+        <div class="nav-status">
+
+            <span class="status-dot"></span>
+
+            AI MODEL ONLINE
+
+        </div>
+
+    </div>
+
+</nav>
+
+
+<!-- =====================================================
+     MAIN APPLICATION
+===================================================== -->
+
+<main class="container">
+
+
+    <!-- =================================================
+         HERO
+    ================================================== -->
+
+    <section class="hero">
+
+        <div class="hero-badge">
+            <span>✦</span>
+            COMPUTER VISION INSPECTION
+        </div>
+
+        <h1>
+            Intelligent Vehicle
+            <span>Damage Detection</span>
+        </h1>
+
+        <p>
+            Upload a vehicle image and let our YOLO-powered
+            computer vision system identify visible damage
+            automatically.
+        </p>
+
+
+        <div class="technology-list">
+
+            <span>YOLO</span>
+            <span>Flask</span>
+            <span>Deep Learning</span>
+            <span>Computer Vision</span>
+
+        </div>
+
+    </section>
+
+
+    <!-- =================================================
+         UPLOAD CARD
+    ================================================== -->
+
+    <section class="card upload-card">
+
+        <div class="section-header">
+
+            <div>
+
+                <div class="step-label">
+                    STEP 01
+                </div>
+
+                <h2>
+                    Upload Vehicle Image
+                </h2>
+
+                <p>
+                    Select a clear image of the vehicle you want
+                    to inspect.
+                </p>
+
+            </div>
+
+
+            <div class="step-circle">
+                01
+            </div>
+
+        </div>
+
+
+        <form id="uploadForm">
+
+            <!-- FILE INPUT -->
+
+            <input
+                type="file"
+                id="imageInput"
+                name="image"
+                accept="image/jpeg,image/png,image/webp"
+                hidden
+            >
+
+
+            <!-- DROP AREA -->
+
+            <div
+                class="drop-area"
+                id="dropZone"
+                tabindex="0">
+
+                <div class="upload-icon">
+                    ↑
+                </div>
+
+                <h3>
+                    Drop your vehicle image here
+                </h3>
+
+                <p>
+                    or click below to browse your computer
+                </p>
+
+                <button
+                    type="button"
+                    class="outline-button"
+                    id="selectButton">
+
+                    Choose Image
+
+                </button>
+
+
+                <!-- FILE INFORMATION -->
+
+                <div
+                    class="file-info hidden"
+                    id="fileMeta">
+
+                    <span class="file-check">
+                        ✓
+                    </span>
+
+                    <div>
+
+                        <strong id="fileName">
+                            image.jpg
+                        </strong>
+
+                        <small id="fileSize">
+                            0 KB
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- PREVIEW -->
+
+            <div
+                class="preview-section hidden"
+                id="previewContainer">
+
+                <div class="preview-title">
+                    SELECTED IMAGE
+                </div>
+
+                <img
+                    id="previewImage"
+                    alt="Selected vehicle image">
+
+            </div>
+
+
+            <!-- ANALYZE BUTTON -->
+
+            <button
+                type="submit"
+                class="analyze-button"
+                id="detectButton">
+
+                <span>✦</span>
+
+                Analyze Vehicle Damage
+
+            </button>
+
+        </form>
+
+    </section>
+
+
+    <!-- =================================================
+         LOADING
+    ================================================== -->
+
+    <section
+        class="loading-card hidden"
+        id="loading">
+
+        <div class="spinner"></div>
+
+        <div>
+
+            <strong>
+                AI Analysis in Progress
+            </strong>
+
+            <p>
+                YOLO is examining the vehicle image...
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- =================================================
+         ERROR
+    ================================================== -->
+
+    <section
+        class="error-card hidden"
+        id="errorCard">
+
+        <div class="error-icon">
+            !
+        </div>
+
+        <div>
+
+            <strong>
+                Detection Failed
+            </strong>
+
+            <p id="errorMessage">
+                Something went wrong.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- =================================================
+         RESULTS
+    ================================================== -->
+
+    <section
+        class="card results-card hidden"
+        id="resultSection">
+
+
+        <!-- RESULT HEADER -->
+
+        <div class="result-header">
+
+            <div>
+
+                <div class="step-label">
+                    STEP 02
+                </div>
+
+                <h2>
+                    Inspection Results
+                </h2>
+
+                <p>
+                    AI-detected vehicle damage from your image.
+                </p>
+
+            </div>
+
+
+            <div class="complete-badge">
+
+                <span>✓</span>
+
+                ANALYSIS COMPLETE
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             IMAGE COMPARISON
+        ================================================== -->
+
+        <div class="comparison-grid">
+
+
+            <!-- ORIGINAL -->
+
+            <div class="image-card">
+
+                <div class="image-card-header">
+
+                    <div>
+
+                        <strong>
+                            Original Image
+                        </strong>
+
+                        <span>
+                            INPUT
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="result-image">
+
+                    <img
+                        id="originalResultImage"
+                        alt="Original vehicle image">
+
+                </div>
+
+            </div>
+
+
+            <!-- DETECTION -->
+
+            <div class="image-card detection-image-card">
+
+                <div class="image-card-header">
+
+                    <div>
+
+                        <strong>
+                            AI Detection
+                        </strong>
+
+                        <span class="blue-tag">
+                            YOLO OUTPUT
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="result-image">
+
+                    <img
+                        id="resultImage"
+                        alt="YOLO vehicle damage detection">
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             SUMMARY
+        ================================================== -->
+
+        <div class="summary-grid">
+
+
+            <div class="summary-card">
+
+                <div class="summary-icon">
+                    #
+                </div>
+
+                <div>
+
+                    <span>
+                        TOTAL DAMAGES
+                    </span>
+
+                    <strong id="damageCount">
+                        0
+                    </strong>
+
+                    <small>
+                        detected objects
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-icon">
+                    %
+                </div>
+
+                <div>
+
+                    <span>
+                        HIGHEST CONFIDENCE
+                    </span>
+
+                    <strong id="highestConfidence">
+                        0%
+                    </strong>
+
+                    <small id="highestClass">
+                        —
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-icon">
+                    AI
+                </div>
+
+                <div>
+
+                    <span>
+                        DETECTION MODEL
+                    </span>
+
+                    <strong>
+                        YOLO
+                    </strong>
+
+                    <small>
+                        Vehicle damage model
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             DETECTION BREAKDOWN
+        ================================================== -->
+
+        <div class="breakdown-header">
+
+            <div>
+
+                <div class="step-label">
+                    DETECTION BREAKDOWN
+                </div>
+
+                <h3>
+                    Detected Damage
+                </h3>
+
+            </div>
+
+
+            <div
+                class="detection-count"
+                id="countChip">
+
+                0 detections
+
+            </div>
+
+        </div>
+
+
+        <div
+            class="detections"
+            id="detections">
+        </div>
+
+
+        <!-- =================================================
+             ACTIONS
+        ================================================== -->
+
+        <div class="result-actions">
+
+            <a
+                href="#"
+                id="downloadButton"
+                class="outline-button download-button hidden"
+                download="vehicle_damage_detection.jpg">
+
+                ↓ Download Annotated Image
+
+            </a>
+
+
+            <button
+                type="button"
+                class="analyze-button new-analysis"
+                id="newAnalysisButton">
+
+                ↻ Analyze Another Image
+
+            </button>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer>
+
+    <div class="footer-container">
+
+        <div class="footer-logo">
+            VehicleDamage AI
+        </div>
+
+        <p>
+            Powered by YOLO • Flask • Computer Vision
+        </p>
+
+        <small>
+            AI-assisted visual inspection system
+        </small>
+
+    </div>
+
+</footer>
+
+
+<!-- =====================================================
+     JAVASCRIPT
+===================================================== -->
+
+<script>
+
+const uploadForm =
+    document.getElementById("uploadForm");
+
+const imageInput =
+    document.getElementById("imageInput");
+
+const selectButton =
+    document.getElementById("selectButton");
+
+const dropZone =
+    document.getElementById("dropZone");
+
+const previewContainer =
+    document.getElementById("previewContainer");
+
+const previewImage =
+    document.getElementById("previewImage");
+
+const fileMeta =
+    document.getElementById("fileMeta");
+
+const fileName =
+    document.getElementById("fileName");
+
+const fileSize =
+    document.getElementById("fileSize");
+
+const detectButton =
+    document.getElementById("detectButton");
+
+const loading =
+    document.getElementById("loading");
+
+const resultSection =
+    document.getElementById("resultSection");
+
+const originalResultImage =
+    document.getElementById("originalResultImage");
+
+const resultImage =
+    document.getElementById("resultImage");
+
+const damageCount =
+    document.getElementById("damageCount");
+
+const highestConfidence =
+    document.getElementById("highestConfidence");
+
+const highestClass =
+    document.getElementById("highestClass");
+
+const countChip =
+    document.getElementById("countChip");
+
+const detections =
+    document.getElementById("detections");
+
+const downloadButton =
+    document.getElementById("downloadButton");
+
+const newAnalysisButton =
+    document.getElementById("newAnalysisButton");
+
+const errorCard =
+    document.getElementById("errorCard");
+
+const errorMessage =
+    document.getElementById("errorMessage");
+
+
+let selectedFile = null;
+
+
+const allowedTypes = [
+    "image/jpeg",
+    "image/png",
+    "image/webp"
+];
+
+
+/* =====================================================
+   FILE SIZE
+===================================================== */
+
+function formatFileSize(bytes) {
+
+    if (bytes < 1024) {
+        return bytes + " B";
+    }
+
+    if (bytes < 1024 * 1024) {
+        return (bytes / 1024).toFixed(1) + " KB";
+    }
+
+    return (bytes / (1024 * 1024)).toFixed(2) + " MB";
+
+}
+
+
+/* =====================================================
+   ERROR
+===================================================== */
+
+function showError(message) {
+
+    errorMessage.textContent = message;
+
+    errorCard.classList.remove("hidden");
+
+    loading.classList.add("hidden");
+
+}
+
+
+/* =====================================================
+   FILE SELECTION
+===================================================== */
+
+function selectFile(file) {
+
+    if (!file) {
+        return;
+    }
+
+
+    if (!allowedTypes.includes(file.type)) {
+
+        showError(
+            "Please select a JPG, JPEG, PNG or WEBP image."
+        );
+
+        return;
+
+    }
+
+
+    selectedFile = file;
+
+    errorCard.classList.add("hidden");
+
+
+    fileName.textContent =
+        file.name;
+
+    fileSize.textContent =
+        formatFileSize(file.size);
+
+
+    fileMeta.classList.remove(
+        "hidden"
+    );
+
+
+    const reader =
+        new FileReader();
+
+
+    reader.onload = function(event) {
+
+        previewImage.src =
+            event.target.result;
+
+        previewContainer.classList.remove(
+            "hidden"
+        );
+
+    };
+
+
+    reader.readAsDataURL(file);
+
+}
+
+
+/* =====================================================
+   SELECT BUTTON
+===================================================== */
+
+selectButton.addEventListener(
+    "click",
+    function(event) {
+
+        event.stopPropagation();
+
+        imageInput.click();
+
+    }
+);
+
+
+/* =====================================================
+   DROP ZONE
+===================================================== */
+
+dropZone.addEventListener(
+    "click",
+    function(event) {
+
+        if (
+            !event.target.closest("button")
+        ) {
+
+            imageInput.click();
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   FILE INPUT
+===================================================== */
+
+imageInput.addEventListener(
+    "change",
+    function() {
+
+        selectFile(
+            imageInput.files[0]
+        );
+
+    }
+);
+
+
+/* =====================================================
+   DRAG EVENTS
+===================================================== */
+
+dropZone.addEventListener(
+    "dragover",
+    function(event) {
+
+        event.preventDefault();
+
+        dropZone.classList.add(
+            "drag-active"
+        );
+
+    }
+);
+
+
+dropZone.addEventListener(
+    "dragleave",
+    function(event) {
+
+        event.preventDefault();
+
+        dropZone.classList.remove(
+            "drag-active"
+        );
+
+    }
+);
+
+
+dropZone.addEventListener(
+    "drop",
+    function(event) {
+
+        event.preventDefault();
+
+        dropZone.classList.remove(
+            "drag-active"
+        );
+
+
+        selectFile(
+            event.dataTransfer.files[0]
+        );
+
+    }
+);
+
+
+/* =====================================================
+   ESCAPE HTML
+===================================================== */
+
+function escapeHtml(value) {
+
+    const div =
+        document.createElement("div");
+
+    div.textContent =
+        value ?? "";
+
+    return div.innerHTML;
+
+}
+
+
+/* =====================================================
+   DETECTION RESULTS
+===================================================== */
+
+function renderDetections(items) {
+
+    detections.innerHTML = "";
+
+
+    if (
+        !items ||
+        items.length === 0
+    ) {
+
+        detections.innerHTML = `
+
+            <div class="no-damage">
+
+                <div class="no-damage-icon">
+                    ✓
+                </div>
+
+                <div>
+
+                    <strong>
+                        No damage detected
+                    </strong>
+
+                    <p>
+                        No damage objects were detected
+                        by the model.
+                    </p>
+
+                </div>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    items.forEach(
+        function(item, index) {
+
+            const confidence =
+                Number(
+                    item.confidence_percent || 0
+                );
+
+
+            let level = "low";
+
+            if (confidence >= 75) {
+                level = "high";
+            }
+            else if (confidence >= 50) {
+                level = "medium";
+            }
+
+
+            const card =
+                document.createElement("div");
+
+
+            card.className =
+                "detection-row";
+
+
+            card.innerHTML = `
+
+                <div class="damage-info">
+
+                    <div class="damage-number">
+                        ${String(index + 1).padStart(2, "0")}
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            ${escapeHtml(item.class_name)}
+                        </strong>
+
+                        <small>
+                            Damage detected
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <div class="confidence">
+
+                    <div class="confidence-top">
+
+                        <span class="${level}">
+                            ${confidence.toFixed(2)}%
+                        </span>
+
+                    </div>
+
+                    <div class="progress">
+
+                        <span
+                            style="width:${Math.min(
+                                confidence,
+                                100
+                            )}%">
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+            `;
+
+
+            detections.appendChild(
+                card
+            );
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   SUBMIT
+===================================================== */
+
+uploadForm.addEventListener(
+    "submit",
+    async function(event) {
+
+        event.preventDefault();
+
+
+        if (!selectedFile) {
+
+            showError(
+                "Please select a vehicle image first."
+            );
+
+            return;
+
+        }
+
+
+        const formData =
+            new FormData();
+
+
+        formData.append(
+            "image",
+            selectedFile
+        );
+
+
+        errorCard.classList.add(
+            "hidden"
+        );
+
+        resultSection.classList.add(
+            "hidden"
+        );
+
+        loading.classList.remove(
+            "hidden"
+        );
+
+
+        detectButton.disabled =
+            true;
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "/predict",
+                    {
+                        method: "POST",
+                        body: formData
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (
+                !response.ok ||
+                !data.success
+            ) {
+
+                throw new Error(
+                    data.error ||
+                    "Vehicle damage detection failed."
+                );
+
+            }
+
+
+            const items =
+                Array.isArray(
+                    data.detections
+                )
+                    ? data.detections
+                    : [];
+
+
+            /* Original */
+
+            originalResultImage.src =
+                previewImage.src;
+
+
+            /* YOLO result */
+
+            resultImage.src =
+                data.result_image;
+
+
+            /* Damage count */
+
+            damageCount.textContent =
+                items.length;
+
+
+            countChip.textContent =
+                `${items.length} ${
+                    items.length === 1
+                        ? "detection"
+                        : "detections"
+                }`;
+
+
+            /* Highest confidence */
+
+            if (items.length > 0) {
+
+                const highest =
+                    items.reduce(
+                        function(best, item) {
+
+                            return Number(
+                                item.confidence_percent || 0
+                            ) >
+                            Number(
+                                best.confidence_percent || 0
+                            )
+                                ? item
+                                : best;
+
+                        }
+                    );
+
+
+                highestConfidence.textContent =
+                    Number(
+                        highest.confidence_percent || 0
+                    ).toFixed(2) + "%";
+
+
+                highestClass.textContent =
+                    highest.class_name || "—";
+
+            }
+            else {
+
+                highestConfidence.textContent =
+                    "—";
+
+                highestClass.textContent =
+                    "No damage";
+
+            }
+
+
+            /* Detection list */
+
+            renderDetections(
+                items
+            );
+
+
+            /* Download */
+
+            downloadButton.href =
+                data.result_image;
+
+            downloadButton.classList.remove(
+                "hidden"
+            );
+
+
+            /* Show result */
+
+            resultSection.classList.remove(
+                "hidden"
+            );
+
+
+            setTimeout(
+                function() {
+
+                    resultSection.scrollIntoView(
+                        {
+                            behavior: "smooth",
+                            block: "start"
+                        }
+                    );
+
+                },
+                100
+            );
+
+        }
+        catch (error) {
+
+            console.error(
+                error
+            );
+
+            showError(
+                error.message ||
+                "Unable to connect to the Flask server."
+            );
+
+        }
+        finally {
+
+            loading.classList.add(
+                "hidden"
+            );
+
+            detectButton.disabled =
+                false;
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   NEW ANALYSIS
+===================================================== */
+
+newAnalysisButton.addEventListener(
+    "click",
+    function() {
+
+        selectedFile = null;
+
+        imageInput.value = "";
+
+        previewImage.src = "";
+
+        previewContainer.classList.add(
+            "hidden"
+        );
+
+        fileMeta.classList.add(
+            "hidden"
+        );
+
+        resultSection.classList.add(
+            "hidden"
+        );
+
+        downloadButton.classList.add(
+            "hidden"
+        );
+
+        errorCard.classList.add(
+            "hidden"
+        );
+
+
+        window.scrollTo(
+            {
+                top: 0,
+                behavior: "smooth"
+            }
+        );
+
+    }
+);
+
+</script>
+
+</body>
+</html>
